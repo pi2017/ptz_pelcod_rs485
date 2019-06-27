@@ -23,7 +23,7 @@ import serial
 import serial.rs485
 
 # =======Change COMPORT =====
-COMPORT = 'com13'
+COMPORT = 'com6'
 BAUD = 19200
 # ==========================
 # =============================================================================
@@ -145,7 +145,7 @@ canvas.config(background='black')
 canvas.pack()
 
 # Load the image file
-im = Image.open('./picture/uss_logo_01.png')
+im = Image.open('./picture/ptz_logo.png')
 # Put the image into a canvas compatible class, and stick in an
 # arbitrary variable to the garbage collector doesn't destroy it
 canvas.image = ImageTk.PhotoImage(im)

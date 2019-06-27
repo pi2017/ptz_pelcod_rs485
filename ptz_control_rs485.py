@@ -13,6 +13,7 @@ DOWN  - FF 01 00 10 00 27 38
 STOP  - FF 01 00 00 00 00 01
 
 """
+import cv2
 import Tkinter
 from Tkinter import Tk, Canvas
 from PIL import Image, ImageTk
@@ -23,12 +24,11 @@ import serial
 import serial.rs485
 import serial.tools.list_ports
 
-# =======Change COMPORT =============================
+# ======= Change COMPORT =============================
 ports = serial.tools.list_ports.comports()
 
 for port, desc, hwid in sorted(ports):
-    print("{}: {} [{}]".format(port, desc, hwid))
-
+    print ('[{}]: [ ], [ ]'.format(port, desc, hwid))
 # ====================================================
 
 # Input true comport ===========================
@@ -49,7 +49,7 @@ except serial.serialutil.SerialException:
 
 
 # =====================================================================
-#
+# Some functions for control
 # =====================================================================
 
 def up():
@@ -92,17 +92,39 @@ def stop():
     return stop
 
 
-def test():
+def zoom_in():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
-    test = bytearray.fromhex('FF 01 00 0C 27 27 5B')
-    print ('TEST')
-    print ('FF 01 00 0C 27 27 5B')
-    ser.write(test)
-    time.sleep(8)
-    print('STOP')
-    print ('FF 01 00 00 00 00 01')
-    ser.write(stop)
-    return test
+    zoom_in = bytearray.fromhex('FF 01 00   ')
+    print ('zoom_in')
+    ser.write(zoom_in)
+    return zoom_in
+
+
+def zoom_out():
+    stop = bytearray.fromhex('FF 01 00 00 00 00 01')
+    zoom_out = bytearray.fromhex('FF 01 00   ')
+    print ('zoom_out')
+    ser.write(zoom_out)
+    return zoom_out
+
+
+def pan_parking():
+    stop = bytearray.fromhex('FF 01 00 00 00 00 01')
+    pan_parking = bytearray.fromhex('FF 01 00 4B 8C A0 78')
+    print ('FF 01 00 4B 8C A0 78')
+    ser.write(pan_parking)
+    print('pan_parking_0')
+    return pan_parking
+
+
+def pan_angle():
+    stop = bytearray.fromhex('FF 01 00 00 00 00 01')
+    pan_angle = bytearray.fromhex('FF 01 00 4B 23 28 97')
+    print ('FF 01 00 4B 23 28 97')
+    ser.write(pan_angle)
+    time.sleep(1)
+    print('pan_angle_90')
+    return pan_angle
 
 
 def close_window():
@@ -110,7 +132,6 @@ def close_window():
 
 
 # ============================================
-#
 # MAIN WINDOW
 # ============================================
 # ============================================
@@ -157,7 +178,7 @@ def spaceKey(event):
     ser.write(stop_stop)
 
 
-# ======= end keyboard =============
+# ======= End keyboard =============
 
 root = Tk()
 root.title('AntennaTracker v1.0')
@@ -185,7 +206,6 @@ canvas.image = ImageTk.PhotoImage(logo)
 canvas.create_image(0, 0, image=canvas.image, anchor='nw')
 
 # ===============================================================================================================
-#
 # BUTTONS
 # ===============================================================================================================
 # UP
@@ -203,25 +223,25 @@ button = Tkinter.Button(root, text="EXIT", fg="black", command=close_window)
 button.place(x=420, y=10, width=55)
 
 # TEST!!!
-button = Tkinter.Button(root, text="TEST", fg="white", bg='black', width=15, command=test)
+button = Tkinter.Button(root, text="TEST", fg="white", bg='black', width=15, command=stop)
 button.place(x=300, y=70, width=55)
 # PRESET01!!!
-button = Tkinter.Button(root, text="PRESET", fg="white", bg='grey', width=15, command=stop)
+button = Tkinter.Button(root, text="Pan360", fg="white", bg='grey', width=15, command=pan_parking)
 button.place(x=360, y=70, width=55)
 # PRESET01!!!
-button = Tkinter.Button(root, text="PRESET", fg="white", bg='gray', width=15, command=stop)
+button = Tkinter.Button(root, text="Pan90", fg="white", bg='gray', width=15, command=pan_angle)
 button.place(x=420, y=70, width=55)
 # PRESET02!!!
-button = Tkinter.Button(root, text="PRESET", fg="white", bg='gray', width=15, command=stop)
+button = Tkinter.Button(root, text="ZoomIN", fg="white", bg='gray', width=15, command=zoom_in)
 button.place(x=300, y=100, width=55)
 # PRESET03!!!
-button = Tkinter.Button(root, text="PRESET", fg="white", bg='gray', width=15, command=stop)
+button = Tkinter.Button(root, text="ZoomOUT", fg="white", bg='gray', width=15, command=zoom_out)
 button.place(x=360, y=100, width=55)
 # PRESET04!!!
 button = Tkinter.Button(root, text="PRESET", fg="white", bg='gray', width=15, command=stop)
 button.place(x=420, y=100, width=55)
-# =========================================================
+# ==================
 # End of programm
-# =========================================================
+# ==================
 root.mainloop()
 ser.close()
