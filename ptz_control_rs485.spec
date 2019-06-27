@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['ptz_control_rs485.py'],
-             pathex=['C:\\Users\\1\\PycharmProjects\\pelcod'],
+             pathex=['C:\\Users\\1\\PycharmProjects\\ptz_pelcod_rs485'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -19,18 +19,14 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
           [],
-          exclude_binaries=True,
           name='ptz_control_rs485',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
+          runtime_tmpdir=None,
           console=True )
-coll = COLLECT(exe,
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               name='ptz_control_rs485')

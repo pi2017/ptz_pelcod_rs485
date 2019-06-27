@@ -13,7 +13,10 @@ DOWN  - FF 01 00 10 00 27 38
 STOP  - FF 01 00 00 00 00 01
 ZOOM IN - FF 01 00 20 00 00 21
 ZOOM OUT - FF 01 00 40 00 00 41
-
+===========================================
+Make EXE file from project:
+pyinstaller --onefile ptz_control_rs485.py
+===========================================
 """
 import cv2
 import Tkinter
@@ -30,11 +33,11 @@ import serial.tools.list_ports
 ports = serial.tools.list_ports.comports()
 
 for port, desc, hwid in sorted(ports):
-    print ('[{}]: [ ], [ ]'.format(port, desc, hwid))
+    print ('[{}]: '.format(port, desc, hwid))
 # ====================================================
 
 # Input true comport ===========================
-comport = raw_input("Input RS485 port : ")
+comport = raw_input("Input COM-RS485 port : ")
 baud = 19200
 # ================================
 # ================================
@@ -224,8 +227,8 @@ button = Tkinter.Button(root, text="EXIT", fg="black", command=close_window)
 button.place(x=420, y=10, width=55)
 
 # TEST!!!
-button = Tkinter.Button(root, text="TEST", fg="white", bg='black', width=15, command=stop)
-button.place(x=300, y=70, width=55)
+#button = Tkinter.Button(root, text="TEST", fg="white", bg='black', width=15, command=stop)
+#button.place(x=300, y=70, width=55)
 # PRESET01!!!
 button = Tkinter.Button(root, text="Pan360", fg="white", bg='grey', width=15, command=pan_parking)
 button.place(x=360, y=70, width=55)
