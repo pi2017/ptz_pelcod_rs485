@@ -1,6 +1,6 @@
 """
 ==============================
-Antenna Tracker PTZ controller v1.0
+Antenna Tracker PTZ controller v2.0
 Author: Oleksii Savchenko
 Date: 01.2019
 Update: 02.2019
@@ -11,6 +11,8 @@ RIGHT - FF 01 00 02 3F 00 42
 UP    - FF 01 00 08 00 27 30
 DOWN  - FF 01 00 10 00 27 38
 STOP  - FF 01 00 00 00 00 01
+ZOOM IN - FF 01 00 20 00 00 21
+ZOOM OUT - FF 01 00 40 00 00 41
 
 """
 import cv2
@@ -94,17 +96,17 @@ def stop():
 
 def zoom_in():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
-    zoom_in = bytearray.fromhex('FF 01 00   ')
-    print ('zoom_in')
+    zoom_in = bytearray.fromhex('FF 01 00 20 00 00 21')
     ser.write(zoom_in)
+    print ('zoom_in')
     return zoom_in
 
 
 def zoom_out():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
-    zoom_out = bytearray.fromhex('FF 01 00   ')
-    print ('zoom_out')
+    zoom_out = bytearray.fromhex('FF 01 00 40 00 00 41')
     ser.write(zoom_out)
+    print ('zoom_out')
     return zoom_out
 
 
@@ -122,7 +124,6 @@ def pan_angle():
     pan_angle = bytearray.fromhex('FF 01 00 4B 23 28 97')
     print ('FF 01 00 4B 23 28 97')
     ser.write(pan_angle)
-    time.sleep(1)
     print('pan_angle_90')
     return pan_angle
 
@@ -181,7 +182,7 @@ def spaceKey(event):
 # ======= End keyboard =============
 
 root = Tk()
-root.title('AntennaTracker v1.0')
+root.title('AntennaTracker v2.0')
 root.geometry('500x160')
 root.configure(background='black')
 
