@@ -1,10 +1,11 @@
 """
-==============================
+===================================
 Antenna Tracker PTZ controller v2.0
 Author: Oleksii Savchenko
 Date: 01.2019
-Update: 02.2019
-==============================
+Update: 07.2019
+Realese -
+===================================
 Pelco-D protocol
 LEFT  - FF 01 00 04 3F 00 44
 RIGHT - FF 01 00 02 3F 00 42
@@ -29,18 +30,18 @@ import serial
 import serial.rs485
 import serial.tools.list_ports
 
-# ======= Change COMPORT =============================
+# ======= Change COMPORT =====================
 ports = serial.tools.list_ports.comports()
 
 for port, desc, hwid in sorted(ports):
     print ('[{}]: '.format(port, desc, hwid))
-# ====================================================
+# ============================================
 
 # Input true comport ===========================
 comport = raw_input("Input COM-RS485 port : ")
 baud = 19200
-# ================================
-# ================================
+# ==============================================
+# ==============================================
 try:
     ser = serial.Serial(comport, baud)
     ser.rs485_mode = serial.rs485.RS485Settings(rts_level_for_tx=True, rts_level_for_rx=False, loopback=False,
@@ -130,14 +131,20 @@ def pan_angle():
     print('pan_angle_90')
     return pan_angle
 
+def look_angle():
+    look_angle = bytearray.fromhex('FF 01 00 53 00 00 54')
+    print ('FF 01 00 53 00 00 54')
+    ser.write(look_angle)
+    return look_angle
+
 
 def close_window():
     root.destroy()
 
 
-# ============================================
+# ============
 # MAIN WINDOW
-# ============================================
+# ============
 # ============================================
 # Keyboard key : Left, Right, Up, Down, Space
 # ============================================
@@ -186,7 +193,7 @@ def spaceKey(event):
 
 root = Tk()
 root.title('AntennaTracker v2.0')
-root.geometry('500x160')
+root.geometry('600x160')
 root.configure(background='black')
 
 root.bind('<Left>', leftKey)
@@ -194,14 +201,17 @@ root.bind('<Right>', rightKey)
 root.bind('<Up>', upKey)
 root.bind('<Down>', downKey)
 root.bind('<space>', spaceKey)
-
+# ==================
 # Create a canvas
+# =================
 canvas_wight = 110
 canvas_height = 110
 canvas = Canvas(root, width=canvas_wight, height=canvas_height, background='black')
 canvas.place(x=185, y=10, width=110)
 
+# ====================
 # Load the image file
+# ====================
 logo = Image.open('./picture/ptz_logo.png')
 # Put the image into a canvas compatible class, and stick in an
 # arbitrary variable to the garbage collector doesn't destroy it
@@ -209,9 +219,9 @@ canvas.image = ImageTk.PhotoImage(logo)
 # Add the image to the canvas, and set the anchor to the root left / north west corner
 canvas.create_image(0, 0, image=canvas.image, anchor='nw')
 
-# ===============================================================================================================
+# ========
 # BUTTONS
-# ===============================================================================================================
+# ========
 # UP
 button = Tkinter.Button(root, text="UP", fg="white", bg='black', command=up).place(x=65, y=35, width=55)
 # DOWN
@@ -224,26 +234,35 @@ button = Tkinter.Button(root, text="LEFT", fg="white", bg='black', command=left)
 button = Tkinter.Button(root, text="STOP", fg="red", bg='black', command=stop).place(x=65, y=100, width=55)
 # EXIT
 button = Tkinter.Button(root, text="EXIT", fg="black", command=close_window)
-button.place(x=420, y=10, width=55)
+button.place(x=530, y=10, width=55)
 
 # TEST!!!
 #button = Tkinter.Button(root, text="TEST", fg="white", bg='black', width=15, command=stop)
 #button.place(x=300, y=70, width=55)
 # PRESET01!!!
 button = Tkinter.Button(root, text="Pan360", fg="white", bg='grey', width=15, command=pan_parking)
-button.place(x=360, y=70, width=55)
-# PRESET01!!!
-button = Tkinter.Button(root, text="Pan90", fg="white", bg='gray', width=15, command=pan_angle)
-button.place(x=420, y=70, width=55)
+button.place(x=390, y=70, width=65)
 # PRESET02!!!
-button = Tkinter.Button(root, text="ZoomIN", fg="white", bg='gray', width=15, command=zoom_in)
-button.place(x=300, y=100, width=55)
+button = Tkinter.Button(root, text="Pan90", fg="white", bg='gray', width=15, command=pan_angle)
+button.place(x=390, y=100, width=65)
 # PRESET03!!!
-button = Tkinter.Button(root, text="ZoomOUT", fg="white", bg='gray', width=15, command=zoom_out)
-button.place(x=360, y=100, width=55)
+button = Tkinter.Button(root, text="ZoomIN", fg="white", bg='gray', width=15, command=zoom_in)
+button.place(x=320, y=100, width=65)
 # PRESET04!!!
-button = Tkinter.Button(root, text="PRESET", fg="white", bg='gray', width=15, command=stop)
-button.place(x=420, y=100, width=55)
+button = Tkinter.Button(root, text="ZoomOUT", fg="white", bg='gray', width=15, command=zoom_out)
+button.place(x=320, y=70, width=65)
+# PRESET05!!!
+button = Tkinter.Button(root, text="Titl Angle", fg="white", bg='black', width=15, command=look_angle)
+button.place(x=460, y=100, width=65)
+# PRESET06!!!
+button = Tkinter.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
+button.place(x=460, y=70, width=65)
+# PRESET07!!!
+button = Tkinter.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
+button.place(x=530, y=70, width=65)
+# PRESET06!!!
+button = Tkinter.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
+button.place(x=530, y=100, width=65)
 # ==================
 # End of programm
 # ==================
