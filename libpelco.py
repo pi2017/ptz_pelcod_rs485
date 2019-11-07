@@ -13,7 +13,7 @@ class PELCO_Functions():
     def _construct_cmd(self, _command2, _pan_speed, _tilt_speed, _address='\x01', _command1='\x00'):
 
         # DEBUG
-        print "DEBUG _construct_cmd: " + str(_command2) + " " + str(_pan_speed) + " " + str(_tilt_speed) + "\n"
+        print ("DEBUG _construct_cmd: " + str(_command2) + " " + str(_pan_speed) + " " + str(_tilt_speed) + "\n")
 
         # Synch Byte
         commands_struct._frame['synch_byte'] = commands_struct._frame['synch_byte']
@@ -26,14 +26,14 @@ class PELCO_Functions():
 
         # Command2
         if _command2 not in commands_struct._function_code:
-            print  str(_command2) + " not in commands_struct._function_code\n"
+            print  (str(_command2) + " not in commands_struct._function_code\n")
             return False
         else:
             commands_struct._frame['command2'] = commands_struct._function_code[_command2]
-            print "_command2 is: " + commands_struct._frame['command2'].encode('hex') + "\n"
+            print ("_command2 is: " + commands_struct._frame['command2'].encode('hex') + "\n")
 
         # Data1: Pan Speed
-        print "_pan_speed is: " + str(_pan_speed) + "\n"
+        print ("_pan_speed is: " + str(_pan_speed) + "\n")
         _hex_pan_speed = hex(_pan_speed)[2:]
         if len(_hex_pan_speed) is 1:
             _hex_byte_pan = '0' + _hex_pan_speed
@@ -62,15 +62,15 @@ class PELCO_Functions():
             _corrected_checksum = _checksum
         commands_struct._frame['checksum'] = _corrected_checksum.decode('hex')
 
-        print "_checksum is: " + commands_struct._frame['checksum'] + "\n"
+        print ("_checksum is: " + commands_struct._frame['checksum'] + "\n")
 
         # assemble command
         _cmd = commands_struct._frame['synch_byte'] + _payload_bytes + commands_struct._frame['checksum']
 
-        print "Final _cmd: \n"
+        print ("Final _cmd: \n")
         for i in commands_struct._frame:
-            print i + " : " + commands_struct._frame[i].encode('hex')
-        print "\n"
+            print (i + " : " + commands_struct._frame[i].encode('hex'))
+        print ("\n")
 
         return (_cmd, None)
 
