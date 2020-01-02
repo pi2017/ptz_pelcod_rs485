@@ -121,11 +121,17 @@ def pan_angle():
     return pan_angle
 
 
-def look_angle():
-    look_angle = bytearray.fromhex('FF 01 00 53 00 00 54')
-    print ('[] FF 01 00 53 00 00 54')
-    ser.write(look_angle)
-    return look_angle
+def tilt_position():
+    tilt_position = bytearray.fromhex('FF 01 00 53 00 00 54')
+    print ('FF 01 00 53 00 00 54')
+    ser.write(tilt_position)
+    return tilt_position
+
+def pan_position():
+    pan_position = bytearray.fromhex('FF 01 00 51 00 00 52')
+    print ('FF 01 00 53 00 00 54')
+    ser.write(pan_position)
+    return pan_position
 
 
 def close_window():
@@ -247,10 +253,10 @@ button.place(x=320, y=100, width=65)
 button = tk.Button(root, text="ZoomOUT", fg="white", bg='gray', width=15, command=zoom_out)
 button.place(x=320, y=70, width=65)
 # PRESET05!!!
-button = tk.Button(root, text="Titl Angle", fg="white", bg='black', width=15, command=look_angle)
+button = tk.Button(root, text="Tilt Pos", fg="white", bg='black', width=15, command=tilt_position)
 button.place(x=460, y=100, width=65)
 # PRESET06!!!
-button = tk.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
+button = tk.Button(root, text="Pan Pos", fg="white", bg='black', width=15, command=pan_position)
 button.place(x=460, y=70, width=65)
 # PRESET07!!!
 button = tk.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
