@@ -3,7 +3,7 @@
 Antenna Tracker PTZ controller v2.0
 Author: Oleksii Savchenko
 Date: 01.2019
-Update: 07.2019
+Update: 06.2020
 Release -
 ===================================
 Pelco-D protocol
@@ -31,24 +31,51 @@ import serial
 import serial.rs485
 import serial.tools.list_ports
 
-# ======= Change COMPORT ======================
+
+# ======= Change COMPORT functions ======================
+
+def serial_ports():
+    return [p.device for p in serial.tools.list_ports.comports()]
+
+
+def on_select(event=None):
+
+    # get selection from event
+    print("event.widget:", event.widget.get())
+    port = event.widget.get()
+    try:
+        global ser
+        ser = serial.Serial(port, 19200, timeout=None)
+    except serial.SerialExeption:
+        print('Error open port')
+        exit(0)
+    # or get selection directly from combobox
+    print("comboboxes: ", cb.get())
+
 
 # ======= Input true comport ==================
-comport = raw_input("Input COM-RS485 port : ")
+''' comport = raw_input("Input COM-RS485 port : ")
 baud = 19200
-# =============================================
-# =============================================
+# ======== Output tracker position ==============
+#comport_out = raw_input("Input COM-Position : ")
+# =========++====================================
+
+
 try:
     ser = serial.Serial(comport, baud)
     ser.rs485_mode = serial.rs485.RS485Settings(rts_level_for_tx=True, rts_level_for_rx=False, loopback=False,
                                                 delay_before_tx=None, delay_before_rx=None)
     print("Port open: " + str(comport))
+#    ser_out = serial.Serial(comport_out, baud)
+#    ser_out.rs485_mode = serial.rs485.RS485Settings(rts_level_for_tx=True, rts_level_for_rx=False, loopback=False,
+#                                               delay_before_tx=None, delay_before_rx=None)
+#   print("Port open: " + str(comport_out))
 
 except serial.serialutil.SerialException:
-    print ("RS-485 not connected..." '\n')
-    print ("Please connect RS-485 module ")
-    exit()
-
+    print("RS-485 not connected..." '\n')
+    print("Please connect RS-485 module ")
+    exit(0)
+'''
 
 # ============================
 # Some functions for control
@@ -56,35 +83,35 @@ except serial.serialutil.SerialException:
 
 def up():
     up = bytearray.fromhex('FF 01 00 08 00 27 30')
-    print ('[UP] FF 01 00 08 00 27 30')
+    print('[UP] FF 01 00 08 00 27 30')
     ser.write(up)
     return up
 
 
 def down():
     down = bytearray.fromhex('FF 01 00 10 00 27 38')
-    print ('[DOWN] FF 01 00 10 00 27 38')
+    print('[DOWN] FF 01 00 10 00 27 38')
     ser.write(down)
     return down
 
 
 def right():
     right = bytearray.fromhex('FF 01 00 02 3F 00 42')
-    print ('[RIGHT] FF 01 00 02 20 00 23')
+    print('[RIGHT] FF 01 00 02 20 00 23')
     ser.write(right)
     return right
 
 
 def left():
     left = bytearray.fromhex('FF 01 00 04 3F 00 44')
-    print ('[LEFT] FF 01 00 04 3F 00 44')
+    print('[LEFT] FF 01 00 04 3F 00 44')
     ser.write(left)
     return left
 
 
 def stop():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
-    print ('[STOP] FF 01 00 00 00 00 01')
+    print('[STOP] FF 01 00 00 00 00 01')
     ser.write(stop)
     return stop
 
@@ -93,7 +120,7 @@ def zoom_in():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
     zoom_in = bytearray.fromhex('FF 01 00 20 00 00 21')
     ser.write(zoom_in)
-    print ('[ZOOM_IN]')
+    print('[ZOOM_IN]')
     return zoom_in
 
 
@@ -101,14 +128,14 @@ def zoom_out():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
     zoom_out = bytearray.fromhex('FF 01 00 40 00 00 41')
     ser.write(zoom_out)
-    print ('[ZOOM_OUT]')
+    print('[ZOOM_OUT]')
     return zoom_out
 
 
 def pan_parking():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
     pan_parking = bytearray.fromhex('FF 01 00 4B 8C A0 78')
-    print ('[Parking 0 deg] FF 01 00 4B 8C A0 78')
+    print('[PAN 0 deg] FF 01 00 4B 8C A0 78')
     ser.write(pan_parking)
     return pan_parking
 
@@ -116,20 +143,21 @@ def pan_parking():
 def pan_angle():
     stop = bytearray.fromhex('FF 01 00 00 00 00 01')
     pan_angle = bytearray.fromhex('FF 01 00 4B 23 28 97')
-    print ('[Angle_90 deg] FF 01 00 4B 23 28 97')
+    print('[PAN 90 deg] FF 01 00 4B 23 28 97')
     ser.write(pan_angle)
     return pan_angle
 
 
 def tilt_position():
     tilt_position = bytearray.fromhex('FF 01 00 53 00 00 54')
-    print ('FF 01 00 53 00 00 54')
+    print('FF 01 00 53 00 00 54')
     ser.write(tilt_position)
     return tilt_position
 
+
 def pan_position():
     pan_position = bytearray.fromhex('FF 01 00 51 00 00 52')
-    print ('FF 01 00 53 00 00 54')
+    print('FF 01 00 51 00 00 52')
     ser.write(pan_position)
     return pan_position
 
@@ -141,6 +169,8 @@ def close_window():
 # ============
 # MAIN WINDOW
 # ============
+
+
 # ============================================
 # Keyboard key : Left, Right, Up, Down, Space
 # ============================================
@@ -216,9 +246,12 @@ canvas.image = ImageTk.PhotoImage(logo)
 # Add the image to the canvas, and set the anchor to the root left / north west corner
 canvas.create_image(0, 0, image=canvas.image, anchor='nw')
 
-# ===============================================================
-
-# ===============================================================
+# ====================COM PORT COMBOBOX=========
+cb = ttk.Combobox(root, values=serial_ports())
+cb.place(relx=0.7, rely=0.15, anchor='center')
+# assign function to combobox
+cb.bind('<<ComboboxSelected>>', on_select)
+# ==============================================
 
 # ========
 # BUTTONS
@@ -259,11 +292,11 @@ button.place(x=460, y=100, width=65)
 button = tk.Button(root, text="Pan Pos", fg="white", bg='black', width=15, command=pan_position)
 button.place(x=460, y=70, width=65)
 # PRESET07!!!
-button = tk.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
-button.place(x=530, y=70, width=65)
+#button = tk.Button(root, text="STOP", fg="white", bg='black', width=15, command=stop)
+#button.place(x=530, y=70, width=65)
 # PRESET06!!!
-button = tk.Button(root, text="PRESET", fg="white", bg='black', width=15, command=stop)
-button.place(x=530, y=100, width=65)
+#button = tk.Button(root, text="STOP", fg="white", bg='black', width=15, command=stop)
+#button.place(x=530, y=100, width=65)
 # ==================
 # End of programm
 # ==================

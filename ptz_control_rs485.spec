@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['ptz_control_rs485.py'],
-             pathex=['C:\\Users\\1\\PycharmProjects\\ptz_pelcod_rs485'],
+             pathex=['D:\\python\\ptz_pelcod_rs485'],
              binaries=[],
              datas=[],
              hiddenimports=[],
